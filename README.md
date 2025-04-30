@@ -1,10 +1,10 @@
 # Azure DNS Zone Terraform Module
 
-This Terraform module creates an Azure DNS Zone with support for both public and private zones, including all DNS record types. 
+This Terraform module creates an Azure DNS Zone with support for public zones, including all DNS record types. 
 
 ## Features
 
-- Create public or private DNS zones
+- Create public DNS zones
 - Configure SOA records
 - Support for all DNS record types:
   - A records (IPv4)
