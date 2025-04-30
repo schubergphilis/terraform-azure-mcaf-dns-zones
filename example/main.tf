@@ -1,5 +1,6 @@
 provider "azurerm" {
   features {}
+
 }
 
 resource "azurerm_resource_group" "example" {
@@ -10,15 +11,9 @@ resource "azurerm_resource_group" "example" {
 module "dns_zone" {
   source = "../"
 
-  name                = "example.com"
+  name                = "test.example.com"
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
-
-  soa_record = {
-    email     = "admin@example.com"
-    host_name = "ns1.example.com"
-    ttl       = 3600
-  }
 
   records = {
     # A Record - Maps domain to IPv4
@@ -73,7 +68,7 @@ module "dns_zone" {
     "1.0.168.192.in-addr.arpa" = {
       type    = "PTR"
       ttl     = 300
-      records = ["www.example.com"]
+      records = ["www.test.example.com"]
     }
 
     # SRV Record - Service
@@ -81,8 +76,8 @@ module "dns_zone" {
       type    = "SRV"
       ttl     = 300
       records = [
-        "10 60 5060 sipserver1.example.com",
-        "20 40 5060 sipserver2.example.com"
+        "10 60 5060 sipserver1.test.example.com",
+        "20 40 5060 sipserver2.test.example.com"
       ]
     }
 
@@ -91,7 +86,7 @@ module "dns_zone" {
       type    = "TXT"
       ttl     = 300
       records = [
-        "v=spf1 include:_spf.example.com ~all",
+        "v=spf1 include:_spf.test.example.com ~all",
         "google-site-verification=1234567890"
       ]
     }

@@ -1,7 +1,6 @@
 resource "azurerm_dns_zone" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
-  location            = var.location
 
   dynamic "soa_record" {
     for_each = var.soa_record != null ? [var.soa_record] : []
@@ -22,6 +21,8 @@ resource "azurerm_dns_zone" "this" {
 }
 
 resource "azurerm_dns_a_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.a_records
 
   name                = each.key
@@ -33,6 +34,8 @@ resource "azurerm_dns_a_record" "this" {
 }
 
 resource "azurerm_dns_aaaa_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.aaaa_records
 
   name                = each.key
@@ -44,6 +47,8 @@ resource "azurerm_dns_aaaa_record" "this" {
 }
 
 resource "azurerm_dns_caa_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.caa_records
 
   name                = each.key
@@ -55,14 +60,16 @@ resource "azurerm_dns_caa_record" "this" {
   dynamic "record" {
     for_each = each.value.records
     content {
-      flags = 0
-      tag   = split(" ", record.value)[0]
-      value = split(" ", record.value)[1]
+      flags = split(" ", record.value)[0]
+      tag   = split(" ", record.value)[1]
+      value = split(" ", record.value)[2]
     }
   }
 }
 
 resource "azurerm_dns_cname_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.cname_records
 
   name                = each.key
@@ -74,6 +81,8 @@ resource "azurerm_dns_cname_record" "this" {
 }
 
 resource "azurerm_dns_mx_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.mx_records
 
   name                = each.key
@@ -92,6 +101,8 @@ resource "azurerm_dns_mx_record" "this" {
 }
 
 resource "azurerm_dns_ns_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.ns_records
 
   name                = each.key
@@ -103,6 +114,8 @@ resource "azurerm_dns_ns_record" "this" {
 }
 
 resource "azurerm_dns_ptr_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.ptr_records
 
   name                = each.key
@@ -114,6 +127,8 @@ resource "azurerm_dns_ptr_record" "this" {
 }
 
 resource "azurerm_dns_srv_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.srv_records
 
   name                = each.key
@@ -134,6 +149,8 @@ resource "azurerm_dns_srv_record" "this" {
 }
 
 resource "azurerm_dns_txt_record" "this" {
+  depends_on = [azurerm_dns_zone.this]
+  
   for_each = local.txt_records
 
   name                = each.key
