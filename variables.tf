@@ -22,17 +22,6 @@ variable "location" {
   type        = string
 }
 
-variable "zone_type" {
-  description = <<-EOT
-    Specifies the type of the DNS zone. Possible values are:
-    - "Public" - A public DNS zone
-    - "Private" - A private DNS zone
-    Defaults to "Public".
-  EOT
-  type        = string
-  default     = "Public"
-}
-
 variable "soa_record" {
   description = <<-EOT
     An SOA record block. Supports the following:
@@ -67,4 +56,45 @@ variable "tags" {
   EOT
   type        = map(string)
   default     = {}
+}
+
+variable "records" {
+  description = <<-EOT
+    Map of DNS records to create in the zone. Supports the following record types:
+    - A records: Maps a domain name to an IPv4 address
+    - AAAA records: Maps a domain name to an IPv6 address
+    - CAA records: Specifies which certificate authorities are allowed to issue certificates for a domain
+    - CNAME records: Maps a domain name to another domain name
+    - MX records: Specifies mail exchange servers for a domain
+    - NS records: Specifies authoritative name servers for a domain
+    - PTR records: Maps an IP address to a domain name
+    - SRV records: Specifies information about available services
+    - TXT records: Contains arbitrary text information
+
+    Example:
+    ```hcl
+    records = {
+      "www" = {
+        type = "A"
+        ttl  = 300
+        records = ["192.168.0.1"]
+      }
+      "mail" = {
+        type = "MX"
+        ttl  = 300
+        records = [
+          "10 mail1.example.com",
+          "20 mail2.example.com"
+        ]
+      }
+    }
+    ```
+  EOT
+  type = map(object({
+    type    = string
+    ttl     = number
+    records = list(string)
+    tags    = optional(map(string))
+  }))
+  default = {}
 } 
