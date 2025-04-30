@@ -28,6 +28,6 @@ locals {
   }
 
   tags = merge(var.tags, var.tags, {
-      "Resource Type" = "DNS Zone"
-    })
+    "Resource Type" = "DNS Zone"
+  })
 }
