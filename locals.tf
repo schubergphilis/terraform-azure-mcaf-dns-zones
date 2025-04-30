@@ -26,4 +26,8 @@ locals {
   txt_records = {
     for k, v in var.records : k => v if v.type == "TXT"
   }
+
+  tags = merge(var.tags, var.tags, {
+      "Resource Type" = "DNS Zone"
+    })
 }

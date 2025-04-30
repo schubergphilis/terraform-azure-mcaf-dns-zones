@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "example" {
 }
 
 module "dns_zone" {
-  source = "../"
+  source = "../../"
 
   name                = "test.example.com"
   resource_group_name = azurerm_resource_group.example.name
