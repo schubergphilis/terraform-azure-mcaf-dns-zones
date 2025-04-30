@@ -13,7 +13,6 @@ module "dns_zone" {
 
   name                = "test.example.com"
   resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
 
   records = {
     # A Record - Maps domain to IPv4
@@ -46,8 +45,8 @@ module "dns_zone" {
 
     # MX Record - Mail Exchange
     "mail" = {
-      type    = "MX"
-      ttl     = 300
+      type = "MX"
+      ttl  = 300
       records = [
         "10 mail1.example.com",
         "20 mail2.example.com"
@@ -56,8 +55,8 @@ module "dns_zone" {
 
     # NS Record - Name Server
     "ns" = {
-      type    = "NS"
-      ttl     = 300
+      type = "NS"
+      ttl  = 300
       records = [
         "ns1.example.com",
         "ns2.example.com"
@@ -73,8 +72,8 @@ module "dns_zone" {
 
     # SRV Record - Service
     "_sip._tcp" = {
-      type    = "SRV"
-      ttl     = 300
+      type = "SRV"
+      ttl  = 300
       records = [
         "10 60 5060 sipserver1.test.example.com",
         "20 40 5060 sipserver2.test.example.com"
@@ -83,8 +82,8 @@ module "dns_zone" {
 
     # TXT Record - Text
     "txt" = {
-      type    = "TXT"
-      ttl     = 300
+      type = "TXT"
+      ttl  = 300
       records = [
         "v=spf1 include:_spf.test.example.com ~all",
         "google-site-verification=1234567890"

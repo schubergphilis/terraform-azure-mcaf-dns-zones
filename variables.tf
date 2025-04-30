@@ -14,14 +14,6 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "location" {
-  description = <<-EOT
-    Specifies the Azure Region where the DNS Zone should exist.
-    Changing this forces a new resource to be created.
-  EOT
-  type        = string
-}
-
 variable "soa_record" {
   description = <<-EOT
     An SOA record block. Supports the following:
