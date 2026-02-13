@@ -17,7 +17,7 @@ resource "azurerm_dns_zone" "this" {
     }
   }
 
-  tags = local.tags
+  tags = var.tags
 }
 
 resource "azurerm_dns_a_record" "this" {
@@ -30,7 +30,7 @@ resource "azurerm_dns_a_record" "this" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
-  tags                = local.tags
+  tags                = var.tags
 }
 
 resource "azurerm_dns_aaaa_record" "this" {
@@ -43,7 +43,7 @@ resource "azurerm_dns_aaaa_record" "this" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
-  tags                = local.tags
+  tags                = var.tags
 }
 
 resource "azurerm_dns_caa_record" "this" {
@@ -55,7 +55,7 @@ resource "azurerm_dns_caa_record" "this" {
   zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  tags                = local.tags
+  tags                = var.tags
 
   dynamic "record" {
     for_each = each.value.records
@@ -77,7 +77,7 @@ resource "azurerm_dns_cname_record" "this" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   record              = each.value.records[0]
-  tags                = local.tags
+  tags                = var.tags
 }
 
 resource "azurerm_dns_mx_record" "this" {
@@ -89,7 +89,7 @@ resource "azurerm_dns_mx_record" "this" {
   zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  tags                = local.tags
+  tags                = var.tags
 
   dynamic "record" {
     for_each = each.value.records
@@ -110,7 +110,7 @@ resource "azurerm_dns_ns_record" "this" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
-  tags                = local.tags
+  tags                = var.tags
 }
 
 resource "azurerm_dns_ptr_record" "this" {
@@ -123,7 +123,7 @@ resource "azurerm_dns_ptr_record" "this" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
-  tags                = local.tags
+  tags                = var.tags
 }
 
 resource "azurerm_dns_srv_record" "this" {
@@ -135,7 +135,7 @@ resource "azurerm_dns_srv_record" "this" {
   zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  tags                = local.tags
+  tags                = var.tags
 
   dynamic "record" {
     for_each = each.value.records
@@ -157,7 +157,7 @@ resource "azurerm_dns_txt_record" "this" {
   zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  tags                = local.tags
+  tags                = var.tags
 
   dynamic "record" {
     for_each = each.value.records
