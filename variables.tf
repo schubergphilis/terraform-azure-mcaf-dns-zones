@@ -1,17 +1,23 @@
 variable "name" {
-  description = <<-EOT
-    The name of the DNS Zone. Must be a valid domain name.
-    Example: "example.com"
-  EOT
   type        = string
+  description = "DNS Zone name"
 }
 
 variable "resource_group_name" {
-  description = <<-EOT
-    The name of the resource group in which to create the DNS zone.
-    This must be an existing resource group.
-  EOT
+  description = "The name of the resource group in which to create the DNS resources"
   type        = string
+}
+
+variable "parent_zone" {
+  description = "(Optional) Name of the parent zone, used for automatic delegation"
+  type        = string
+  default     = null
+}
+
+variable "dnssec_enabled" {
+  description = "Set this to false to disable the automatic creation of DS records based on parent zones"
+  type        = bool
+  default     = true
 }
 
 variable "soa_record" {
@@ -41,52 +47,58 @@ variable "soa_record" {
   default = null
 }
 
-variable "tags" {
-  description = <<-EOT
-    A mapping of tags to assign to the DNS zone.
-    Example: { "environment" = "production", "cost-center" = "12345" }
-  EOT
-  type        = map(string)
-  default     = {}
+variable "records" {
+  description = "Object containing all DNS record types to create"
+  type = object({
+    a_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    aaaa_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    caa_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    cname_records = optional(map(object({
+      ttl    = optional(number)
+      record = string
+    })), {})
+
+    mx_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    ns_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    ptr_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    srv_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+
+    txt_records = optional(map(object({
+      ttl     = optional(number)
+      records = set(string)
+    })), {})
+  })
+  default = {}
 }
 
-variable "records" {
-  description = <<-EOT
-    Map of DNS records to create in the zone. Supports the following record types:
-    - A records: Maps a domain name to an IPv4 address
-    - AAAA records: Maps a domain name to an IPv6 address
-    - CAA records: Specifies which certificate authorities are allowed to issue certificates for a domain
-    - CNAME records: Maps a domain name to another domain name
-    - MX records: Specifies mail exchange servers for a domain
-    - NS records: Specifies authoritative name servers for a domain
-    - PTR records: Maps an IP address to a domain name
-    - SRV records: Specifies information about available services
-    - TXT records: Contains arbitrary text information
-
-    Example:
-    ```hcl
-    records = {
-      "www" = {
-        type = "A"
-        ttl  = 300
-        records = ["192.168.0.1"]
-      }
-      "mail" = {
-        type = "MX"
-        ttl  = 300
-        records = [
-          "10 mail1.example.com",
-          "20 mail2.example.com"
-        ]
-      }
-    }
-    ```
-  EOT
-  type = map(object({
-    type    = string
-    ttl     = number
-    records = list(string)
-    tags    = optional(map(string))
-  }))
+variable "tags" {
+  type    = map(string)
   default = {}
-} 
+}

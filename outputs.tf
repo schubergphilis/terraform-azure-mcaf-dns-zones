@@ -13,13 +13,12 @@ output "name_servers" {
   value       = azurerm_dns_zone.this.name_servers
 }
 
-output "number_of_record_sets" {
-  description = "The current number of record sets in this DNS zone."
-  value       = azurerm_dns_zone.this.number_of_record_sets
+output "dnssec_signing_key" {
+  description = "Required information to register DNSSEC info with the Domain Provider"
+  value       = local.dnssec_signing_key
 }
 
-output "max_number_of_record_sets" {
-  description = "Maximum number of records in the zone."
-  value       = azurerm_dns_zone.this.max_number_of_record_sets
+output "recordsets" {
+  description = "recordsets and their resource_ids"
+  value       = module.dns_records.recordsets
 }
- 

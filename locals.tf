@@ -1,29 +1,5 @@
 locals {
-  a_records = {
-    for k, v in var.records : k => v if v.type == "A"
-  }
-  aaaa_records = {
-    for k, v in var.records : k => v if v.type == "AAAA"
-  }
-  caa_records = {
-    for k, v in var.records : k => v if v.type == "CAA"
-  }
-  cname_records = {
-    for k, v in var.records : k => v if v.type == "CNAME"
-  }
-  mx_records = {
-    for k, v in var.records : k => v if v.type == "MX"
-  }
-  ns_records = {
-    for k, v in var.records : k => v if v.type == "NS"
-  }
-  ptr_records = {
-    for k, v in var.records : k => v if v.type == "PTR"
-  }
-  srv_records = {
-    for k, v in var.records : k => v if v.type == "SRV"
-  }
-  txt_records = {
-    for k, v in var.records : k => v if v.type == "TXT"
-  }
+  # Select the correct signing key for DNSSEC:
+  dnssec_signing_key = var.dnssec_enabled ? [for signingKey in azapi_resource.dnssec[0].output.properties.signingKeys : signingKey if can(signingKey.delegationSignerInfo)][0] : null
+  parsed_resource_id = provider::azurerm::parse_resource_id(azurerm_dns_zone.this.id)
 }

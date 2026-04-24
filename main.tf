@@ -1,7 +1,6 @@
 resource "azurerm_dns_zone" "this" {
   name                = var.name
   resource_group_name = var.resource_group_name
-
   dynamic "soa_record" {
     for_each = var.soa_record != null ? [var.soa_record] : []
     content {
@@ -16,153 +15,60 @@ resource "azurerm_dns_zone" "this" {
       tags          = soa_record.value.tags
     }
   }
-
   tags = var.tags
 }
 
-resource "azurerm_dns_a_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
+resource "azapi_resource" "dnssec" {
+  count     = var.dnssec_enabled ? 1 : 0
+  name      = "default"
+  parent_id = azurerm_dns_zone.this.id
+  type      = "Microsoft.Network/dnsZones/dnssecConfigs@2023-07-01-preview"
+}
 
-  for_each = local.a_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
+resource "azurerm_dns_ns_record" "parent_ns_record" {
+  count               = var.parent_zone != null ? 1 : 0
+  name                = split(".", var.name)[0]
+  zone_name           = var.parent_zone
   resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  records             = each.value.records
+  records             = azurerm_dns_zone.this.name_servers
+  ttl                 = 86400
   tags                = var.tags
 }
 
-resource "azurerm_dns_aaaa_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.aaaa_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  records             = each.value.records
-  tags                = var.tags
-}
-
-resource "azurerm_dns_caa_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.caa_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  tags                = var.tags
-
-  dynamic "record" {
-    for_each = each.value.records
-    content {
-      flags = split(" ", record.value)[0]
-      tag   = split(" ", record.value)[1]
-      value = split(" ", record.value)[2]
+resource "azapi_resource" "parent_ds_record" {
+  count     = var.parent_zone != null && var.dnssec_enabled ? 1 : 0
+  type      = "Microsoft.Network/dnsZones/DS@2023-07-01-preview"
+  name      = split(".", var.name)[0]
+  parent_id = "/subscriptions/${local.parsed_resource_id["subscription_id"]}/resourceGroups/${local.parsed_resource_id["resource_group_name"]}/providers/Microsoft.Network/dnsZones/${var.parent_zone}"
+  body = {
+    properties = {
+      DSRecords = [
+        {
+          algorithm = local.dnssec_signing_key.securityAlgorithmType
+          digest = {
+            algorithmType = local.dnssec_signing_key.delegationSignerInfo[0].digestAlgorithmType
+            value         = local.dnssec_signing_key.delegationSignerInfo[0].digestValue
+          }
+          keyTag = local.dnssec_signing_key.keyTag
+        }
+      ]
+      TTL = 3600
     }
   }
 }
 
-resource "azurerm_dns_cname_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.cname_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
+module "dns_records" {
+  source              = "./recordsets"
+  dns_zone_name       = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  record              = each.value.records[0]
+  a_records           = var.records.a_records
+  aaaa_records        = var.records.aaaa_records
+  caa_records         = var.records.caa_records
+  cname_records       = var.records.cname_records
+  mx_records          = var.records.mx_records
+  ns_records          = var.records.ns_records
+  ptr_records         = var.records.ptr_records
+  srv_records         = var.records.srv_records
+  txt_records         = var.records.txt_records
   tags                = var.tags
-}
-
-resource "azurerm_dns_mx_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.mx_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  tags                = var.tags
-
-  dynamic "record" {
-    for_each = each.value.records
-    content {
-      preference = split(" ", record.value)[0]
-      exchange   = split(" ", record.value)[1]
-    }
-  }
-}
-
-resource "azurerm_dns_ns_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.ns_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  records             = each.value.records
-  tags                = var.tags
-}
-
-resource "azurerm_dns_ptr_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.ptr_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  records             = each.value.records
-  tags                = var.tags
-}
-
-resource "azurerm_dns_srv_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.srv_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  tags                = var.tags
-
-  dynamic "record" {
-    for_each = each.value.records
-    content {
-      priority = split(" ", record.value)[0]
-      weight   = split(" ", record.value)[1]
-      port     = split(" ", record.value)[2]
-      target   = split(" ", record.value)[3]
-    }
-  }
-}
-
-resource "azurerm_dns_txt_record" "this" {
-  depends_on = [azurerm_dns_zone.this]
-
-  for_each = local.txt_records
-
-  name                = each.key
-  zone_name           = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  ttl                 = each.value.ttl
-  tags                = var.tags
-
-  dynamic "record" {
-    for_each = each.value.records
-    content {
-      value = record.value
-    }
-  }
 }
