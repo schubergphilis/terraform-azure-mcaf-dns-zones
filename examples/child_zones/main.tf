@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.12"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>4.54"
+    }
+  }
+}
+
 provider "azurerm" {
   features {}
 }
@@ -43,8 +53,8 @@ module "parent_zone_with_soa" {
     }
     cname_records = {
       "blog" = {
-        ttl     = 300
-        records = ["www.example.com"]
+        ttl    = 300
+        record = "www.example.com"
       }
     }
     mx_records = {
