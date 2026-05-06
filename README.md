@@ -37,9 +37,7 @@ This Terraform module creates an Azure DNS Zone with support for public zones, i
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_dns_records"></a> [dns\_records](#module\_dns\_records) | ./recordsets | n/a |
+No modules.
 
 ## Resources
 
@@ -47,7 +45,16 @@ This Terraform module creates an Azure DNS Zone with support for public zones, i
 |------|------|
 | [azapi_resource.dnssec](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) | resource |
 | [azapi_resource.parent_ds_record](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) | resource |
+| [azurerm_dns_a_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_a_record) | resource |
+| [azurerm_dns_aaaa_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_aaaa_record) | resource |
+| [azurerm_dns_caa_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_caa_record) | resource |
+| [azurerm_dns_cname_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_cname_record) | resource |
+| [azurerm_dns_mx_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_mx_record) | resource |
 | [azurerm_dns_ns_record.parent_ns_record](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_ns_record) | resource |
+| [azurerm_dns_ns_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_ns_record) | resource |
+| [azurerm_dns_ptr_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_ptr_record) | resource |
+| [azurerm_dns_srv_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_srv_record) | resource |
+| [azurerm_dns_txt_record.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_txt_record) | resource |
 | [azurerm_dns_zone.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_zone) | resource |
 
 ## Inputs
@@ -57,8 +64,8 @@ This Terraform module creates an Azure DNS Zone with support for public zones, i
 | <a name="input_name"></a> [name](#input\_name) | DNS Zone name | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which to create the DNS resources | `string` | n/a | yes |
 | <a name="input_dnssec_enabled"></a> [dnssec\_enabled](#input\_dnssec\_enabled) | Set this to false to disable the automatic creation of DS records based on parent zones | `bool` | `true` | no |
-| <a name="input_parent_zone"></a> [parent\_zone](#input\_parent\_zone) | (Optional) Name of the parent zone, used for automatic delegation | `string` | `null` | no |
-| <a name="input_records"></a> [records](#input\_records) | Object containing all DNS record types to create | <pre>object({<br/>    a_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    aaaa_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    caa_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    cname_records = optional(map(object({<br/>      ttl    = optional(number)<br/>      record = string<br/>    })), {})<br/><br/>    mx_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    ns_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    ptr_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    srv_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    txt_records = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/>  })</pre> | `{}` | no |
+| <a name="input_parent_zone_id"></a> [parent\_zone\_id](#input\_parent\_zone\_id) | (Optional) Full Azure resource ID of the parent DNS zone, used for automatic delegation. The parent zone may live in a different resource group or subscription. | `string` | `null` | no |
+| <a name="input_records"></a> [records](#input\_records) | Object containing all DNS record types to create | <pre>object({<br/>    a = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    aaaa = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    caa = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    cname = optional(map(object({<br/>      ttl    = optional(number)<br/>      record = string<br/>    })), {})<br/><br/>    mx = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    ns = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    ptr = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    srv = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/><br/>    txt = optional(map(object({<br/>      ttl     = optional(number)<br/>      records = set(string)<br/>    })), {})<br/>  })</pre> | `{}` | no |
 | <a name="input_soa_record"></a> [soa\_record](#input\_soa\_record) | An SOA record block. Supports the following:<br/>- email: The email contact for the SOA record.<br/>- host\_name: The domain name of the authoritative name server for this SOA record.<br/>- expire\_time: The expire time for the SOA record.<br/>- minimum\_ttl: The minimum Time To Live for the SOA record.<br/>- refresh\_time: The refresh time for the SOA record.<br/>- retry\_time: The retry time for the SOA record.<br/>- serial\_number: The serial number for the SOA record.<br/>- ttl: The Time To Live of the SOA record.<br/>- tags: A mapping of tags to assign to the SOA record. | <pre>object({<br/>    email         = string<br/>    host_name     = string<br/>    expire_time   = optional(number)<br/>    minimum_ttl   = optional(number)<br/>    refresh_time  = optional(number)<br/>    retry_time    = optional(number)<br/>    serial_number = optional(number)<br/>    ttl           = optional(number)<br/>    tags          = optional(map(string))<br/>  })</pre> | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | `{}` | no |
 
