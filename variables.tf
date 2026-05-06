@@ -8,8 +8,8 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "parent_zone" {
-  description = "(Optional) Name of the parent zone, used for automatic delegation"
+variable "parent_zone_id" {
+  description = "(Optional) Full Azure resource ID of the parent DNS zone, used for automatic delegation. The parent zone may live in a different resource group or subscription."
   type        = string
   default     = null
 }
@@ -50,47 +50,47 @@ variable "soa_record" {
 variable "records" {
   description = "Object containing all DNS record types to create"
   type = object({
-    a_records = optional(map(object({
+    a = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    aaaa_records = optional(map(object({
+    aaaa = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    caa_records = optional(map(object({
+    caa = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    cname_records = optional(map(object({
+    cname = optional(map(object({
       ttl    = optional(number)
       record = string
     })), {})
 
-    mx_records = optional(map(object({
+    mx = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    ns_records = optional(map(object({
+    ns = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    ptr_records = optional(map(object({
+    ptr = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    srv_records = optional(map(object({
+    srv = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})
 
-    txt_records = optional(map(object({
+    txt = optional(map(object({
       ttl     = optional(number)
       records = set(string)
     })), {})

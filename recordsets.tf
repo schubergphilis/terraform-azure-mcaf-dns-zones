@@ -1,30 +1,30 @@
 resource "azurerm_dns_a_record" "this" {
-  for_each = var.a_records
+  for_each = var.records.a
 
   name                = each.key
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  zone_name           = var.dns_zone_name
   records             = each.value.records
   tags                = var.tags
 }
 
 resource "azurerm_dns_aaaa_record" "this" {
-  for_each = var.aaaa_records
+  for_each = var.records.aaaa
 
   name                = each.key
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
-  zone_name           = var.dns_zone_name
   records             = each.value.records
   tags                = var.tags
 }
 
 resource "azurerm_dns_caa_record" "this" {
-  for_each = var.caa_records
+  for_each = var.records.caa
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   tags                = var.tags
@@ -40,10 +40,10 @@ resource "azurerm_dns_caa_record" "this" {
 }
 
 resource "azurerm_dns_cname_record" "this" {
-  for_each = var.cname_records
+  for_each = var.records.cname
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   record              = each.value.record
@@ -51,10 +51,10 @@ resource "azurerm_dns_cname_record" "this" {
 }
 
 resource "azurerm_dns_mx_record" "this" {
-  for_each = var.mx_records
+  for_each = var.records.mx
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   tags                = var.tags
@@ -69,10 +69,10 @@ resource "azurerm_dns_mx_record" "this" {
 }
 
 resource "azurerm_dns_ns_record" "this" {
-  for_each = var.ns_records
+  for_each = var.records.ns
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
@@ -80,10 +80,10 @@ resource "azurerm_dns_ns_record" "this" {
 }
 
 resource "azurerm_dns_ptr_record" "this" {
-  for_each = var.ptr_records
+  for_each = var.records.ptr
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
@@ -91,10 +91,10 @@ resource "azurerm_dns_ptr_record" "this" {
 }
 
 resource "azurerm_dns_srv_record" "this" {
-  for_each = var.srv_records
+  for_each = var.records.srv
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   tags                = var.tags
@@ -111,10 +111,10 @@ resource "azurerm_dns_srv_record" "this" {
 }
 
 resource "azurerm_dns_txt_record" "this" {
-  for_each = var.txt_records
+  for_each = var.records.txt
 
   name                = each.key
-  zone_name           = var.dns_zone_name
+  zone_name           = azurerm_dns_zone.this.name
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   tags                = var.tags

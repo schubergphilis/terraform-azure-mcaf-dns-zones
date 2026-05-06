@@ -33,31 +33,31 @@ module "parent_zone_with_soa" {
   }
   resource_group_name = azurerm_resource_group.example.name
   records = {
-    a_records = {
+    a = {
       "www" = {
         ttl     = 300
         records = ["192.168.0.1"]
       }
     }
-    aaaa_records = {
+    aaaa = {
       "ipv6" = {
         ttl     = 300
         records = ["2001:db8::1"]
       }
     }
-    caa_records = {
+    caa = {
       "caa" = {
         ttl     = 300
         records = ["0 issue \"letsencrypt.org\""]
       }
     }
-    cname_records = {
+    cname = {
       "blog" = {
         ttl    = 300
         record = "www.example.com"
       }
     }
-    mx_records = {
+    mx = {
       "mail" = {
         ttl = 300
         records = [
@@ -66,7 +66,7 @@ module "parent_zone_with_soa" {
         ]
       }
     }
-    ns_records = {
+    ns = {
       "ns" = {
         ttl = 300
         records = [
@@ -75,19 +75,19 @@ module "parent_zone_with_soa" {
         ]
       }
     }
-    ptr_records = {
+    ptr = {
       "1.0.168.192.in-addr.arpa" = {
         ttl     = 300
         records = ["www.test.example.com"]
       }
     }
-    srv_records = {
+    srv = {
       "_sip._tcp" = {
         ttl     = 300
         records = ["10 60 5060 sipserver.example.com"]
       }
     }
-    txt_records = {
+    txt = {
       "txt" = {
         ttl     = 300
         records = ["v=spf1 include:_spf.google.com ~all"]
@@ -105,9 +105,9 @@ module "example_child_zone" {
   source              = "../.."
   name                = "test.example.com"
   resource_group_name = azurerm_resource_group.example.name
-  parent_zone         = module.parent_zone_with_soa.name
+  parent_zone_id      = module.parent_zone_with_soa.id
   records = {
-    txt_records = {
+    txt = {
       "txt" = {
         ttl     = 300
         records = ["v=spf1 include:_spf.google.com ~all"]
@@ -126,7 +126,7 @@ module "zone_with_dnssec_disabled" {
   resource_group_name = azurerm_resource_group.example.name
   dnssec_enabled      = false
   records = {
-    txt_records = {
+    txt = {
       "txt" = {
         ttl     = 300
         records = ["v=spf1 include:_spf.google.com ~all"]

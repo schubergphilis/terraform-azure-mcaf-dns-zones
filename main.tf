@@ -26,20 +26,20 @@ resource "azapi_resource" "dnssec" {
 }
 
 resource "azurerm_dns_ns_record" "parent_ns_record" {
-  count               = var.parent_zone != null ? 1 : 0
-  name                = split(".", var.name)[0]
-  zone_name           = var.parent_zone
-  resource_group_name = var.resource_group_name
+  count               = var.parent_zone_id != null ? 1 : 0
+  name                = trimsuffix(var.name, ".${local.parsed_parent_zone.resource_name}")
+  zone_name           = local.parsed_parent_zone.resource_name
+  resource_group_name = local.parsed_parent_zone.resource_group_name
   records             = azurerm_dns_zone.this.name_servers
   ttl                 = 86400
   tags                = var.tags
 }
 
 resource "azapi_resource" "parent_ds_record" {
-  count     = var.parent_zone != null && var.dnssec_enabled ? 1 : 0
+  count     = var.parent_zone_id != null && var.dnssec_enabled ? 1 : 0
   type      = "Microsoft.Network/dnsZones/DS@2023-07-01-preview"
-  name      = split(".", var.name)[0]
-  parent_id = "/subscriptions/${local.parsed_resource_id["subscription_id"]}/resourceGroups/${local.parsed_resource_id["resource_group_name"]}/providers/Microsoft.Network/dnsZones/${var.parent_zone}"
+  name      = trimsuffix(var.name, ".${local.parsed_parent_zone.resource_name}")
+  parent_id = var.parent_zone_id
   body = {
     properties = {
       DSRecords = [
@@ -55,20 +55,4 @@ resource "azapi_resource" "parent_ds_record" {
       TTL = 3600
     }
   }
-}
-
-module "dns_records" {
-  source              = "./recordsets"
-  dns_zone_name       = azurerm_dns_zone.this.name
-  resource_group_name = var.resource_group_name
-  a_records           = var.records.a_records
-  aaaa_records        = var.records.aaaa_records
-  caa_records         = var.records.caa_records
-  cname_records       = var.records.cname_records
-  mx_records          = var.records.mx_records
-  ns_records          = var.records.ns_records
-  ptr_records         = var.records.ptr_records
-  srv_records         = var.records.srv_records
-  txt_records         = var.records.txt_records
-  tags                = var.tags
 }
