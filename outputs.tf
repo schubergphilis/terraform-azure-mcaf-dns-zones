@@ -13,13 +13,22 @@ output "name_servers" {
   value       = azurerm_dns_zone.this.name_servers
 }
 
-output "number_of_record_sets" {
-  description = "The current number of record sets in this DNS zone."
-  value       = azurerm_dns_zone.this.number_of_record_sets
+output "dnssec_signing_key" {
+  description = "Required information to register DNSSEC info with the Domain Provider"
+  value       = local.dnssec_signing_key
 }
 
-output "max_number_of_record_sets" {
-  description = "Maximum number of records in the zone."
-  value       = azurerm_dns_zone.this.max_number_of_record_sets
+output "recordsets" {
+  description = "recordsets and their resource_ids"
+  value = {
+    a     = { for k, v in azurerm_dns_a_record.this : k => v.id }
+    aaaa  = { for k, v in azurerm_dns_aaaa_record.this : k => v.id }
+    caa   = { for k, v in azurerm_dns_caa_record.this : k => v.id }
+    cname = { for k, v in azurerm_dns_cname_record.this : k => v.id }
+    mx    = { for k, v in azurerm_dns_mx_record.this : k => v.id }
+    ns    = { for k, v in azurerm_dns_ns_record.this : k => v.id }
+    ptr   = { for k, v in azurerm_dns_ptr_record.this : k => v.id }
+    srv   = { for k, v in azurerm_dns_srv_record.this : k => v.id }
+    txt   = { for k, v in azurerm_dns_txt_record.this : k => v.id }
+  }
 }
- 
