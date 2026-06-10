@@ -1,3 +1,9 @@
+<!-- migrate-repo:banner -->
+> [!IMPORTANT]
+> **This repository has moved to [`schubergphilis-ep/terraform-azure-mcaf-dns-zones`](https://github.com/schubergphilis-ep/terraform-azure-mcaf-dns-zones).**
+> Please update your references and use the new location for issues, PRs, and contributions.
+<!-- migrate-repo:banner -->
+
 # Azure DNS Zone Terraform Module
 
 This Terraform module creates an Azure DNS Zone with support for public zones, including all DNS record types. 
